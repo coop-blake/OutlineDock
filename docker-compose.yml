@@ -75,4 +75,9 @@ services:
     networks:
       - outline-network
 
-  networks
+networks:
+  outline-network:
+
+volumes:
+  postgres_data:
+  minio_data:
