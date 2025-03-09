@@ -3,4 +3,4 @@
 export $(grep -v '^#' .env | xargs)
 
 # Start the services
-docker-compose up -d
+docker compose up -d
