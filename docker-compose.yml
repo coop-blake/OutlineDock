@@ -1,0 +1,78 @@
+version: "3"
+
+services:
+  outline:
+    image: outlinewiki/outline:latest
+    container_name: outline
+    depends_on:
+      - postgres
+      - redis
+      - minio
+    environment:
+      # Basic configuration
+      - URL=${OUTLINE_URL}
+      - PORT=3000
+      - SECRET_KEY=${OUTLINE_SECRET_KEY}
+      - UTILS_SECRET=${OUTLINE_UTILS_SECRET}
+
+      # Database configuration
+      - DATABASE_URL=postgres://outline:password@postgres:5432/outline
+
+      # Redis configuration
+      - REDIS_URL=redis://redis:6379
+
+      # MinIO (S3-compatible storage) configuration
+      - AWS_ACCESS_KEY_ID=${MINIO_ACCESS_KEY}
+      - AWS_SECRET_ACCESS_KEY=${MINIO_SECRET_KEY}
+      - AWS_REGION=us-east-1
+      - AWS_S3_UPLOAD_BUCKET_URL=http://minio:9000/outline
+      - AWS_S3_UPLOAD_BUCKET_NAME=outline
+      - AWS_S3_FORCE_PATH_STYLE=true
+      - FILE_STORAGE=s3
+
+      # OpenID Connect (OIDC) configuration for authentication
+      - OIDC_CLIENT_ID=${OIDC_CLIENT_ID}
+      - OIDC_CLIENT_SECRET=${OIDC_CLIENT_SECRET}
+      - OIDC_AUTH_URI=${OIDC_AUTH_URI}
+      - OIDC_TOKEN_URI=${OIDC_TOKEN_URI}
+      - OIDC_USERINFO_URI=${OIDC_USERINFO_URI}
+      - OIDC_DISPLAY_NAME=${OIDC_DISPLAY_NAME}
+
+    ports:
+      - "3000:3000"
+    networks:
+      - outline-network
+
+  postgres:
+    image: postgres:13
+    container_name: postgres
+    environment:
+      - POSTGRES_USER=outline
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=outline
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - outline-network
+
+  redis:
+    image: redis:latest
+    container_name: redis
+    networks:
+      - outline-network
+
+  minio:
+    image: minio/minio:latest
+    container_name: minio
+    environment:
+      - MINIO_ACCESS_KEY=${MINIO_ACCESS_KEY}
+      - MINIO_SECRET_KEY=${MINIO_SECRET_KEY}
+    command: server /data
+    ports:
+      - "9000:9000"
+    volumes:
+      - minio_data:/data
+    networks:
+      - outline-network
+
+  networks
