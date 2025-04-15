@@ -1,2 +1,13 @@
-
+# ignore for dev
 .idea/
+.DS_Store
+
+
+# Files needing copied
+.env
+shared-certs
+# Files need moved
+keycloak-data
+keycloak-db-data
+
+
