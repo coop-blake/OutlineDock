@@ -2,10 +2,13 @@
 .idea/
 .DS_Store
 
-
-# Files needing copied
+#Generated files
 .env
+docker-compose.yml
+# Files needing copied
+
 shared-certs
+
 # Files need moved
 keycloak-data
 keycloak-db-data
