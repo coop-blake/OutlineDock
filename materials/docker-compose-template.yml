@@ -12,7 +12,9 @@ services:
       - outline
       - minio
     networks:
-      - outline-network
+      - outline-network:
+        - aliases:
+            - <HOSTNAME>
 
 
   keycloak:
@@ -69,14 +71,12 @@ services:
       - REDIS_URL=redis://redis:6379
       - STORAGE_DRIVER=s3
       - AWS_S3_UPLOAD_BUCKET_URL=https://<HOSTNAME>:9000/outline
-      - AWS_ACCESS_KEY_ID=outlineadmin
-      - AWS_SECRET_ACCESS_KEY=supersecretpassword
+      - AWS_ACCESS_KEY_ID=<OUTLINEADMINUSER>
+      - AWS_SECRET_ACCESS_KEY=<OUTLINEADMINPASSWORD>
       - AWS_S3_UPLOAD_BUCKET_NAME=outline
       - AWS_S3_UPLOAD_MAX_SIZE=26214400
       - AWS_S3_FORCE_PATH_STYLE=true
       - PGSSLMODE=disable
-    extra_hosts:
-      - "<HOSTNAME>:172.20.0.8"
     networks:
       - outline-network
 
@@ -103,8 +103,8 @@ services:
     container_name: minio
     command: server /data --console-address ":9001"
     environment:
-      - MINIO_ROOT_USER=outlineadmin
-      - MINIO_ROOT_PASSWORD=supersecretpassword
+      - MINIO_ROOT_USER=<OUTLINEADMINUSER>
+      - MINIO_ROOT_PASSWORD=<OUTLINEADMINPASSWORD>
     ports:
       - "9000:9000"  # S3 API
       - "9001:9001"  # MinIO Console
